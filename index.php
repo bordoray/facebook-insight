@@ -243,10 +243,6 @@ var token = '<?php echo $_GET["key"]; ?>';
 // "EAADMIZCt1VyIBANBycVIVIaSoLRp3jS328ovPXazt9OiC5Si4ZAgAfASSzqputtN6NtNpy9wbM7AHXXdRcgjlFBRTz4GdZC3n6Hv6X4AKnbxbgOp64qwfZAB7ujZCa4owBy0WliCbVl18NnpJ7NgC8PKZCyDylgVxhNIE9bn8qXrCcC5S7X4d4NgxJDaLCx8sZD";
 var url = "https://graph.facebook.com/v11.0/me?fields=albums%7Bphotos.limit(600)%7Bpicture%2Cplace%7D%7D&limit=800&access_token="+token;
 
-// MIERUNE tiles
-var style ='<?php echo $_GET["style"]; ?>';
-var murl= "https://tile.cdn.mierune.co.jp/styles/"+style+"/{z}/{x}/{y}.png?key=xzW_kHFn4dy8g-3NLR2-eM_q2_xqaB8Oqq7OrDJEhd1hFlQuBroj-9MjCtpo76rD";
-
 
 axios.get(url).then(function(result){
   document.getElementById("inputoken").value = "Wait...";

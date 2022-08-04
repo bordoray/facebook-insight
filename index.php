@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-    <!-- <script src='https://api.mapbox.com/mapbox-gl-js/v0.34.0/mapbox-gl.js'></script> -->
     <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://connect.facebook.net/en_US/all.js"></script>
@@ -13,7 +12,6 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
-    <!-- <link href='https://api.mapbox.com/mapbox-gl-js/v0.34.0/mapbox-gl.css' rel='stylesheet' /> -->
     <link rel="stylesheet" href="https://bootswatch.com/4/cosmo/bootstrap.min.css" />
 </head>
 <body>
@@ -68,7 +66,6 @@ FB.getLoginStatus(function(response) {
 
 function processAlbum(albums){
     for(var j=0; j < albums.length; j++){
-    // albums.forEach(function(alb){
       //in one album, first page
       if(albums[j].id=="1495671911263"){
         a=1;
@@ -77,10 +74,8 @@ function processAlbum(albums){
       photo = albums[j].photos.data;
 
           for(var i=0; i < photo.length; i++){
-            // photo.forEach(function(pic){
                   thumb = photo[i].picture;
                   if(photo[i].place && photo[i].place.location){
-                    // if(a==1){console.log([place_name,lon,lat]);}
                     place_name = photo[i].place.name
                     lon = photo[i].place.location.longitude;
                     lat = photo[i].place.location.latitude;
@@ -165,22 +160,6 @@ var map = new mapboxgl.Map({
 
   map.on('load',function(){
 
-        // // sources
-        //     map.addSource('mierune', {
-        //         'type': 'raster',
-        //         'tiles': [
-        //             murl
-        //         ],
-        //         'tileSize': 256
-        //     });
-        //
-        //       map.addLayer({
-        //         'id': 'wms-test-layer',
-        //         'type': 'raster',
-        //         'source': 'mierune' ,
-        //         'paint': {}
-        //     });
-
             // sources
                 console.log(inbjson);
                 console.log("wait...");
@@ -216,8 +195,6 @@ var map = new mapboxgl.Map({
          for(var j=0; j < fe.length; j++){
             if (j<3){
               var n = fe.length - j-1;
-              // console.log(n);
-            //  n = Math.round(Math.random()*fe.length);
              img_url = fe[n].properties.img;
              popupcontent += "<td>　<img src='"+img_url+"'/>　</td>";
            }
@@ -233,7 +210,6 @@ var map = new mapboxgl.Map({
       });
 
 document.getElementById("inputoken").value = "Done!";
-        // map.getSource('inbounds').setData(inbjson);
 }
 
 var a=0;

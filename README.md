@@ -2,12 +2,13 @@
 - Visualize location of pictures of Facebook personal album.
 - This is a completely client side app, your data will not be stored anywhere
 - Did it for personal use only, so please forgive various blemishes.
+- Example : https://bordoray.github.io/facebook-insight/
 
 
 ![Preview](https://user-images.githubusercontent.com/26103833/182764358-2f4a8800-647e-44e2-8be0-7502d4613af6.png)
 
 ### How to open
-- Download index.php
+- Download fb_api/index.php
 - Put it on a web server
 - Visualize on browser related to web server
 

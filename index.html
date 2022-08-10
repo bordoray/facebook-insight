@@ -2,11 +2,17 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <script src="https://unpkg.com/maplibre-gl@2.1.9/dist/maplibre-gl.js"></script>
+        <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
         <link
-            href="https://unpkg.com/maplibre-gl@2.1.9/dist/maplibre-gl.css"
+            href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css"
             rel="stylesheet"
         />
+
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+        />
+        <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
         <link
             rel="stylesheet"
             href="https://bootswatch.com/4/cosmo/bootstrap.min.css"
@@ -16,98 +22,80 @@
         <script src="./json/rlinsight_data.js"></script>
         <script src="./json/rlstyle.js"></script>
 
-        <!-- <b>My FB insight</b>　　to visualize your data:<br>
-1. Get yout access_token <a href="https://developers.facebook.com/tools/explorer/?method=GET&path=me%3Ffields%3Did%2Cname&version=v2.11" target="_blank">here</a> <br>
-2. paste your access token here →　<input type="text" id="inputoken" value="your access token"><br>
-3. <a href="#" onclick="visu()">VISUALIZE</a> -->
         <div id="map" style="width: 100%; height: 700px"></div>
         <div id="json"></div>
         <script>
+            loadmap(inbjson);
 
-            // const inbjson = JSON.parse("./json/rlfbinsight.json");
-             loadmap(inbjson);
+            function loadmap(inbjson) {
+                mapboxgl.accessToken =
+                    "pk.eyJ1IjoiYm9yZG9yYXkiLCJhIjoiY2tqbThwaXpzNTd5YjMzbnlzb2h3MWN2MiJ9.a-ofbh89FAqM5VJS88WtfQ";
+                // Create a popup, but don't add it to the map yet.
+                var popup = new mapboxgl.Popup({
+                    closeButton: false,
+                });
 
+                //generate map
+                var map = new mapboxgl.Map({
+                    container: "map",
+                    center: [137.5, 37.5],
+                    zoom: 4.5,
+                    // minZoom: 4,
+                    interactive: true,
+                    style: "mapbox://styles/bordoray/ckjm8tv9i1n2t19ruvknhkbkh",
+                });
 
-            function loadmap(inbjson){
+                map.on("load", function () {
+                    // sources
+                    console.log(inbjson);
+                    console.log("wait...");
+                    setTimeout(function () {
+                        console.log(inbjson);
+                        map.addSource("inbounds", {
+                            type: "geojson",
+                            data: inbjson,
+                        });
 
-            var popup = new maplibregl.Popup({ closeOnClick: false });
+                        map.addLayer({
+                            id: "places",
+                            source: "inbounds",
+                            type: "circle",
+                            paint: {
+                                "circle-radius": 3.5,
+                                "circle-color": "#ff00aa",
+                                "circle-opacity": 0.6,
+                            },
+                        });
+                    }, 2000);
 
-            var map = new maplibregl.Map({
-                container: 'map',
-                center: [137.5, 37.5],
-                zoom: 4.5,
-                // minZoom: 4,
-                interactive : true,
-                // style: rlstyle
-                style: 'https://demotiles.maplibre.org/style.json'
-            });
-
-              map.on('load',function(){
-
-                        // sources
-                            console.log(inbjson);
-                            console.log("wait...");
-                            setTimeout(function(){
-                                        map.addSource('STAMEN', {
-                                                                    type: "raster",
-                                        tiles: [
-                                            "http://a.tile.stamen.com/terrain/{z}/{x}/{y}.png",
-                                        ],
-                                        tileSize: 256,
-                                        attribution:
-                                            "Data by <a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
-                                                              });
-
-                                     map.addLayer({
-                                        id: "basemap",
-                                        type: "raster",
-                                        source: "STAMEN",
-                                        minzoom: 0,
-                                        maxzoom: 18,
-                                    },);
-                                              map.addSource('inbounds', {
-                                                    "type":"geojson",
-                                                    "data":inbjson
-                                              });
-
-                                              map.addLayer({
-                                                  "id": "places",
-                                                  "source": "inbounds",
-                                                  "type": "circle",
-                                                  "paint": {
-                                                      "circle-radius": 3.5,
-                                                      "circle-color": "#ff00aa",
-                                                      "circle-opacity":0.6
-                                                  }
-                                                },
-                                              );
-                            },2000);
-
-
-              map.on('mousemove', function (e) {
-                var fe = map.queryRenderedFeatures(e.point, {layers: ['places']});
-                if(fe.length){
-                     clon = fe[0].geometry.coordinates[0];
-                     clat = fe[0].geometry.coordinates[1];
-                     place_name = fe[0].properties.name;
-                     popupcontent = place_name+"<br><table><tr>";
-                     for(var j=0; j < fe.length; j++){
-                        if (j<3){
-                          var n = fe.length - j-1;
-                         img_url = fe[n].properties.img;
-                         popupcontent += "<td>　<img src='"+img_url+"'/>　</td>";
-                       }
-                     }
-                         popup.setLngLat([clon,clat])
-                         .setHTML(popupcontent+"</tr></table>")
-                         .addTo(map);
-                } else {
-                  popup.remove();
-                }
-              });
-              console.log("Done!");
-                  });
-
+                    map.on("mousemove", function (e) {
+                        var fe = map.queryRenderedFeatures(e.point, {
+                            layers: ["places"],
+                        });
+                        if (fe.length) {
+                            clon = fe[0].geometry.coordinates[0];
+                            clat = fe[0].geometry.coordinates[1];
+                            place_name = fe[0].properties.name;
+                            popupcontent = place_name + "<br><table><tr>";
+                            for (var j = 0; j < fe.length; j++) {
+                                if (j < 3) {
+                                    var n = fe.length - j - 1;
+                                    img_url = fe[n].properties.img;
+                                    popupcontent +=
+                                        "<td>　<img src='" +
+                                        img_url +
+                                        "'/>　</td>";
+                                }
+                            }
+                            popup
+                                .setLngLat([clon, clat])
+                                .setHTML(popupcontent + "</tr></table>")
+                                .addTo(map);
+                        } else {
+                            popup.remove();
+                        }
+                    });
+                });
             }
         </script>
     </body>

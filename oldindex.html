@@ -2,18 +2,12 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>bordoray's insights (globe)</title>
-        <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+        <title>bordoray's insights (planisphere)</title>
+        <script src="https://unpkg.com/maplibre-gl@2.1.9/dist/maplibre-gl.js"></script>
         <link
-            href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css"
+            href="https://unpkg.com/maplibre-gl@2.1.9/dist/maplibre-gl.css"
             rel="stylesheet"
         />
-
-        <link
-            rel="stylesheet"
-            href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
-        />
-        <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
         <link
             rel="stylesheet"
             href="https://bootswatch.com/4/cosmo/bootstrap.min.css"
@@ -23,51 +17,37 @@
       <div style="padding:15px">
         <script src="./json/rlinsight_data.js"></script>
 
-        <b>Globe Map as my Facebook said</b><br>
-        <i>Data from Facebook Graph API</i>
+        <b>World Map as my Facebook said (Globe coming soon)</b><br>
+        <i>Data from Facebook Graph API, Basemap from Maptiler & Openstreetmap</i>
       </div>
-
+         <!--to visualize your data:<br>
+1. Get yout access_token <a href="https://developers.facebook.com/tools/explorer/?method=GET&path=me%3Ffields%3Did%2Cname&version=v2.11" target="_blank">here</a> <br>
+2. paste your access token here →　<input type="text" id="inputoken" value="your access token"><br>
+3. <a href="#" onclick="visu()">VISUALIZE</a> -->
         <div id="map" style="width: 100%; height: 700px"></div>
-        <div id="json" style="padding:15px" ><a href="./planisphere/index.html">Planisphere view</a></div>
+        <div id="json"></div>
         <script>
+            // const inbjson = JSON.parse("./json/rlfbinsight.json");
             loadmap(inbjson);
 
             function loadmap(inbjson) {
-                mapboxgl.accessToken =
-                    "pk.eyJ1IjoiYm9yZG9yYXkiLCJhIjoiY2tqbThwaXpzNTd5YjMzbnlzb2h3MWN2MiJ9.a-ofbh89FAqM5VJS88WtfQ";
-                // Create a popup, but don't add it to the map yet.
-                var popup = new mapboxgl.Popup({
-                    closeButton: false,
-                });
+                var popup = new maplibregl.Popup({ closeOnClick: false });
 
-                //generate map
-                var map = new mapboxgl.Map({
+                var map = new maplibregl.Map({
                     container: "map",
-                    projection: 'globe',
-                    center: [75, 67],
-                    zoom: 1.5,
+                    center: [50, 0],
+                    zoom: 1.3,
                     // minZoom: 4,
                     interactive: true,
-                    // style: "mapbox://styles/bordoray/ckjm8tv9i1n2t19ruvknhkbkh",
-                    // style:"mapbox://styles/mapbox/satellite-v9"
-                    style:"mapbox://styles/bordoray/cla2gp8vz006214sytj4bvwfr"
+                    style: "https://api.maptiler.com/maps/05592018-659c-4f31-97d7-a25b34b47b8e/style.json?key=yhy9XyHzzmvrO4bEiJps",
                 });
-                map.addControl(new mapboxgl.NavigationControl());
-                map.on('style.load', () => {
-                  map.setFog({
-                      color: 'rgb(186, 210, 235)', // Lower atmosphere
-                      'high-color': 'rgb(36, 92, 223)', // Upper atmosphere
-                      'horizon-blend': 0.01, // Atmosphere thickness (default 0.2 at low zooms)
-                      'space-color': 'rgb(11, 11, 25)', // Background color
-                      'star-intensity': 0.6 // Background star brightness (default 0.35 at low zoooms )
-                  });
-                });
+                map.addControl(new maplibregl.NavigationControl());
+
                 map.on("load", function () {
                     // sources
                     console.log(inbjson);
                     console.log("wait...");
                     setTimeout(function () {
-                        console.log(inbjson);
                         map.addSource("inbounds", {
                             type: "geojson",
                             data: inbjson,
@@ -112,6 +92,7 @@
                             popup.remove();
                         }
                     });
+                    console.log("Done!");
                 });
             }
         </script>

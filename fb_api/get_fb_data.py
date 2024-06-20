@@ -1,11 +1,12 @@
 import requests
+import json
 
 import download_image as img
 
 # Get your token here (authorize users photo)
 # https://developers.facebook.com/tools/explorer/?method=GET&path=me%3Ffields%3Did%2Cname&version=v2.11
 # Paste here
-token = "EAAbZBxNmEZCMABO38t1WSMXZAAAmmMJJcTmosrUGsi6sTGuJJVLG3GQF8PULexeYq7qoZARZCbyTRKp6cpCBZAnLDVkFZC6ZBT4yW1SgzZBRSf8JRZCttdNbyDoKGoOhEHr1sImyW6DCTHNGVjZA4Ci4afXZCxx9nWYP51oZAFwzWKMIA2sFU02QZARwYoLQ6srZC4xTrshg3K9c1Cq7VxnkxgorgLOtsOIvOKZCwoWh6QGBJspnBTYeW8N7TU6ZBEBOhUt0ZD"
+token = "your token"
 
 a = 0
 inbounds = []
@@ -99,9 +100,16 @@ def nextpage_photo(url):
             if "place" in pic and "location" in pic["place"]:
                 thumb = pic["picture"]
                 place_name = pic["place"]["name"]
-                lon = pic["place"]["location"]["longitude"]
-                lat = pic["place"]["location"]["latitude"]
-                add_geojson(thumb, place_name, lon, lat)
+                if (
+                    "longitude" in pic["place"]["location"]
+                    and "latitude" in pic["place"]["location"]
+                ):
+                    lon = pic["place"]["location"]["longitude"]
+                    lat = pic["place"]["location"]["latitude"]
+                    add_geojson(thumb, place_name, lon, lat)
+                else:
+                    print("skip following photo due to no coordinates")
+                    print(pic)
 
         if "paging" in result["data"] and "next" in result["data"]["paging"]:
             nextpage_photo(result["data"]["paging"]["next"])
@@ -119,9 +127,29 @@ def main():
 
     if "next" in result["albums"]["paging"]:
         nextpage_album(result["albums"]["paging"]["next"])
-
+    else:
+        print(inbounds[0])
     return
+
+
+def save_json_to_js_file(json_data, file_path):
+    try:
+        # Convert the JSON data to a pretty-printed JSON string
+        json_string = json.dumps(json_data, indent=4)
+
+        # Create the JavaScript content
+        js_content = f"const json_contents = {json_string};"
+
+        # Write the JavaScript content to the file
+        with open(file_path, "w") as file:
+            file.write(js_content)
+
+        print(f"JavaScript file successfully written to {file_path}")
+    except IOError as e:
+        print(f"Error writing JavaScript file: {e}")
 
 
 main()
 print(len(inbounds))
+
+save_json_to_js_file(inbounds, "rlinsight_data.js")

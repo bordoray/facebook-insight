@@ -12,7 +12,7 @@ def get_image_filename(url):
 
 def download_image(url):
     try:
-        file_path = os.path.join("./data", get_image_filename(url))
+        file_path = os.path.join("./thumbs", get_image_filename(url))
         if not os.path.isfile(file_path):
             response = requests.get(url)
             response.raise_for_status()  # Check if the request was successful

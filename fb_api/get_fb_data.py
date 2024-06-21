@@ -5,8 +5,8 @@ import download_image as img
 
 # Get your token here (authorize users photo)
 # https://developers.facebook.com/tools/explorer/?method=GET&path=me%3Ffields%3Did%2Cname&version=v2.11
-# Paste here
-token = "your token"
+
+token = "paste your token here"
 
 a = 0
 inbounds = []
@@ -27,14 +27,12 @@ def get_fb_api_result(token):
         print(f"Error occurred: {err}")
 
 
-# TODO Adjust
 def nextpage_album(url):
     try:
-        print(url)
+        print(f"next page : {url}")
         response = requests.get(url)
-        # response.raise_for_status()
         result = response.json()
-        print(result.keys())
+
         albums = result["data"]
         process_album(albums)
 
@@ -55,7 +53,7 @@ def add_geojson(thumb, place_name, lon, lat):
             "properties": {"name": place_name, "img": img.get_image_filename(thumb)},
         }
         inbounds.append(feature)
-        # img.download_image(thumb)
+        img.download_image(thumb)
 
 
 def process_album(albums):
@@ -127,8 +125,7 @@ def main():
 
     if "next" in result["albums"]["paging"]:
         nextpage_album(result["albums"]["paging"]["next"])
-    else:
-        print(inbounds[0])
+
     return
 
 
@@ -138,7 +135,9 @@ def save_json_to_js_file(json_data, file_path):
         json_string = json.dumps(json_data, indent=4)
 
         # Create the JavaScript content
-        js_content = f"const json_contents = {json_string};"
+        js_content = 'const inbjson = {"type": "FeatureCollection","features": '
+        js_content += json_string
+        js_content += "};"
 
         # Write the JavaScript content to the file
         with open(file_path, "w") as file:
@@ -150,6 +149,6 @@ def save_json_to_js_file(json_data, file_path):
 
 
 main()
-print(len(inbounds))
+print(f"{len(inbounds)} pics processed")
 
 save_json_to_js_file(inbounds, "rlinsight_data.js")

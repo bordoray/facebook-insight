@@ -7,9 +7,11 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://connect.facebook.net/en_US/all.js"></script>
 
-<script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
-<link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
-
+    <script src="https://unpkg.com/maplibre-gl@2.1.9/dist/maplibre-gl.js"></script>
+        <link
+            href="https://unpkg.com/maplibre-gl@2.1.9/dist/maplibre-gl.css"
+            rel="stylesheet"
+        />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://bootswatch.com/4/cosmo/bootstrap.min.css" />
@@ -142,20 +144,18 @@ function addGeojson(thumb,place_name,lon,lat){
 
 
 function loadmap(inbjson){
-mapboxgl.accessToken = 'pk.eyJ1IjoiYm9yZG9yYXkiLCJhIjoiY2tqbThwaXpzNTd5YjMzbnlzb2h3MWN2MiJ9.a-ofbh89FAqM5VJS88WtfQ';
+
 // Create a popup, but don't add it to the map yet.
-var popup = new mapboxgl.Popup({
-    closeButton: false
-});
+var popup = new maplibregl.Popup({ closeOnClick: false });
 
 //generate map
-var map = new mapboxgl.Map({
+var map = new maplibregl.Map({
     container: 'map',
-    center: [137.5, 37.5],
-    zoom: 4.5,
+    center: [50, 0],
+    zoom: 1.3,
     // minZoom: 4,
     interactive : true,
-    style: 'mapbox://styles/bordoray/ckjm8tv9i1n2t19ruvknhkbkh'
+    style: 'https://api.maptiler.com/maps/landscape/style.json?key=yhy9XyHzzmvrO4bEiJps'
 });
 
   map.on('load',function(){

@@ -8,9 +8,10 @@
 
 ![Preview](https://user-images.githubusercontent.com/26103833/182764358-2f4a8800-647e-44e2-8be0-7502d4613af6.png)
 
+## One shot use (client side, planisphere only)
 ### How to open
 - Download fb_api/index.php
-- Put it on a web server
+- Put it on a server
 - Visualize on browser related to web server
 
 ### How to use
@@ -18,3 +19,14 @@
 - Paste access token
 - Click on visualize and wait less than one minute, map will appear once process finished.
 (Map First display extent is in Japan)
+
+## Permanent use (need long process)
+- Clone repository
+- Run python command to generate your data
+```
+cd fb_api
+python3 get_fb_data.py
+## pics download will take a while, about 100 pics / minute
+```
+- move `rlinsight_data.js` produced in `fb_api` directory to overwrite `rlinsight_data.js` in `json` directory
+- open `index.html` and explore

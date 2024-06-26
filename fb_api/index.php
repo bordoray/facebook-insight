@@ -155,7 +155,7 @@ var map = new maplibregl.Map({
     zoom: 1.3,
     // minZoom: 4,
     interactive : true,
-    style: 'https://api.maptiler.com/maps/landscape/style.json?key=yhy9XyHzzmvrO4bEiJps'
+    style: "https://api.maptiler.com/maps/jp-mierune-gray/style.json?key=yhy9XyHzzmvrO4bEiJps",
 });
 
   map.on('load',function(){

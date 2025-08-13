@@ -1,4 +1,4 @@
-const inbjson = {
+{
 "type": "FeatureCollection",
 "name": "rlinsight_data",
 "features": [
@@ -7563,4 +7563,3 @@ const inbjson = {
 { "type": "Feature", "properties": { "name": "Toshkent Station", "img": "2501_uz12_tashkent.jpg" }, "geometry": { "type": "Point", "coordinates": [ 69.287934541879949, 41.292791343113471 ] } }
 ]
 }
-;

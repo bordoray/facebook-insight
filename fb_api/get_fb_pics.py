@@ -7,17 +7,17 @@ import download_image as img
 # https://developers.facebook.com/tools/explorer/?method=GET&path=me%3Ffields%3Did%2Cname&version=v2.11
 
 token = "paste your token here"
-token = "EAAbZBxNmEZCMABO5WReahzoCboXX7ekL7rphFl8tGTbdcR2PHppp8dCmZAn72SXQr4WZAy6z2fVeSPZAMJRdvvJDQTb22SmB5Dy6VZCFyrc7BWU11YJepJqhvdHhVDZADuxQSU6acYRjPCsnRC98yIgI681TihP3MFOJB0JMUnbbXZACyQxE6864L5WTQDiHq1eLRGbQZB3RTl4p6Pa4CGG9QEri0dsyr0N5EeoJnApMw1BMMwWQPhYryZBWF2gQNsdZBmBVZBKBCOs0HwZDZD"
+token = "EAAbZBxNmEZCMABO450FZCy8PbWENpej4r4QaZCTMwVeVKi7cifKdNk8Ibe9qIWfSjYrItz7oHogl3bieWqYeGZCGqzMzqZBwupbagDw8SjlZAZCMhGEYMdGMfkBQOD6x7Sx6d0A4DMu67C0MJt0k6tvkCJpn2JmX5kQvJVFBrwoSnhpMMIPIYLIs2iBLBlDZA14274h1y2JcsDhymn7x6Hwtf55RlDXtlZCOTOPnz54S1IukzTj3gn6zs2cjgw6ZAiccfZBATqkgBRgO"
 
 inbounds = []
 
 
-def get_fb_api_result(token):
-    url = (
-        "https://graph.facebook.com/v11.0/me?fields=albums%7Bphotos.limit(600)%7Bpicture%2Cplace%7D%7D&limit=800&access_token="
-        + token
-    )
+def get_fb_api_result(url):
 
+    # url = (
+    #     "https://graph.facebook.com/v20.0/me?fields=photos{place,name,picture}&access_token="
+    #     + token
+    # )
     try:
         response = requests.get(url)
         response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
@@ -121,13 +121,63 @@ def nextpage_photo(url):
         print(f"Error occurred: {err}")
 
 
-def main():
-    result = get_fb_api_result(token)
-    albums = result["albums"]["data"]
-    process_album(albums)
+def check_attributes(json_data):
+    if "place" in json_data and isinstance(json_data["place"], dict):
+        place = json_data["place"]
 
-    if "next" in result["albums"]["paging"]:
-        nextpage_album(result["albums"]["paging"]["next"])
+        # Check if 'name' key exists in 'place'
+        if "name" not in place:
+            return False
+
+        # Check if 'location' key exists and is a dictionary in 'place'
+        if "location" in place and isinstance(place["location"], dict):
+            location = place["location"]
+
+            # Check if 'latitude' and 'longitude' keys exist in 'location'
+            if "latitude" in location and "longitude" in location:
+                return True
+            else:
+                return False
+        else:
+            return False
+    else:
+        return False
+
+
+def process_photos(response_data):
+    for data in response_data["photos"]["data"]:
+        having_place = check_attributes(data)
+        if having_place:
+            thumb = data["picture"]
+            place_name = data["place"]["name"]
+            lon = data["place"]["location"]["longitude"]
+            lat = data["place"]["location"]["latitude"]
+            add_geojson(thumb, place_name, lon, lat)
+            # print(data)
+    if "paging" in response_data["photos"]:
+        if "next" in response_data["photos"]["paging"]:
+            response = get_fb_api_result(response_data["photos"]["paging"]["next"])
+            process_photos(response)
+
+
+def main():
+    url = (
+        "https://graph.facebook.com/v20.0/me?fields=photos{place,name,picture}&access_token="
+        + token
+    )
+    result = get_fb_api_result(url)
+    # print(result)
+    # file_path = "/Users/rlay/Documents/github/facebook-insight/fb_sample.json"
+    # # Write the JSON data to a file
+    # with open(file_path, "r") as file:
+    #     result = json.load(file)
+    process_photos(result)
+    # albums = result["albums"]["data"]
+    # process_album(albums)
+    # print(inbounds)
+
+    # if "next" in result["albums"]["paging"]:
+    #     nextpage_album(result["albums"]["paging"]["next"])
 
     return
 
